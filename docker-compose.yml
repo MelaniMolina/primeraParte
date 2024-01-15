@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  mysql_master_1:
+    image: mysql:latest
+    container_name: mysql_master_1
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: replica
+      MYSQL_LOG_BIN: mysql-bin
+      MYSQL_SERVER_ID: 1
+
+  mysql_master_2:
+    image: mysql:latest
+    container_name: mysql_master_2
+    ports:
+      - 3307:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: replica
+      MYSQL_LOG_BIN: mysql-bin
+      MYSQL_SERVER_ID: 2
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin
+    ports:
+      - 8080:80
+    environment:
+      PMA_HOSTS: "mysql_master_1,mysql_master_2"
+      PMA_ARBITRARY: 1
+    depends_on:
+      - mysql_master_1
+      - mysql_master_2
